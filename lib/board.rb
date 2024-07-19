@@ -7,6 +7,13 @@ class Board
     @squares = generate_board
   end
 
+  def valid_square?(square)
+    x = square.x
+    y = square.y
+
+    !((x || y).negative? || (x || y) > 7)
+  end
+
   def generate_board
     board_squares = []
     (0..7).each do |x|
@@ -21,7 +28,6 @@ class Board
   def to_s
     ret_str = ""
     @squares.each_with_index do |square, idx|
-      square = square.to_s
       ret_str += "#{square} "
       ret_str += "\n" if ((idx + 1) % 8).zero?
     end
