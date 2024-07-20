@@ -13,9 +13,14 @@ class Board
 
   def generate_board
     board_squares = []
+
+    last_color = "white"
     (0..7).each do |x|
       (0..7).each do |y|
-        square = Square.new(x, y)
+        unless x.between?(1, 7) && y.zero?
+          last_color = last_color == "black" ? "white" : "black"
+        end
+        square = Square.new(x, y, last_color)
         board_squares << square
       end
     end
@@ -24,8 +29,13 @@ class Board
 
   def to_s
     ret_str = ""
+    new_square = ""
     @squares.each_with_index do |square, idx|
-      ret_str += "#{square} "
+      new_square = "#{square} ".black if square.color == "black"
+      new_square = "#{square} ".white if square.color == "white"
+      new_square = "[ K ] ".yellow if square.x == knight.x && square.y == knight.y
+
+      ret_str += new_square
       ret_str += "\n" if ((idx + 1) % 8).zero?
     end
     ret_str
@@ -76,7 +86,8 @@ class Board
       possible_moves = generate_possible_moves(square)
       adjacency_list << possible_moves
     end
-    puts "Adjacency list -> #{adjacency_list}"
     adjacency_list
   end
+
+  def calculate_move; end
 end
