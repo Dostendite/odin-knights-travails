@@ -2,13 +2,33 @@ require_relative "square"
 require_relative "knight"
 
 class Board
-  attr_reader :knight, :squares, :moves
+  attr_reader :knight, :squares, :moves, :adjacency_list
 
   def initialize(knight_x = 3, knight_y = 3)
     @knight = Knight.new("Sleipnir", knight_x, knight_y)
     @squares = generate_board
     @moves = generate_moves
-    # @adjacency_list = generate_adjacency_list
+    @adjacency_list = generate_adjacency_list
+  end
+
+  def generate_board
+    board_squares = []
+    (0..7).each do |x|
+      (0..7).each do |y|
+        square = Square.new(x, y)
+        board_squares << square
+      end
+    end
+    board_squares
+  end
+
+  def to_s
+    ret_str = ""
+    @squares.each_with_index do |square, idx|
+      ret_str += "#{square} "
+      ret_str += "\n" if ((idx + 1) % 8).zero?
+    end
+    ret_str
   end
 
   def valid_square?(square_x, square_y)
@@ -16,7 +36,6 @@ class Board
     return false if square_x > 7 || square_y > 7
 
     true
-    # !((square_x.negative? || square_y.negative?) || (square_x || square_y) > 7)
   end
 
   def generate_moves
@@ -40,7 +59,7 @@ class Board
     [result_x, result_y]
   end
 
-  def check_possible_moves(square)
+  def generate_possible_moves(square)
     possible_moves = []
 
     @moves.each do |move|
@@ -50,23 +69,14 @@ class Board
     possible_moves
   end
 
-  def generate_board
-    board_squares = []
-    (0..7).each do |x|
-      (0..7).each do |y|
-        square = Square.new(x, y)
-        board_squares << square
-      end
-    end
-    board_squares
-  end
+  def generate_adjacency_list
+    adjacency_list = []
 
-  def to_s
-    ret_str = ""
-    @squares.each_with_index do |square, idx|
-      ret_str += "#{square} "
-      ret_str += "\n" if ((idx + 1) % 8).zero?
+    @squares.each do |square|
+      possible_moves = generate_possible_moves(square)
+      adjacency_list << possible_moves
     end
-    ret_str
+    puts "Adjacency list -> #{adjacency_list}"
+    adjacency_list
   end
 end
