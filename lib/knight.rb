@@ -1,5 +1,5 @@
 class Knight
-  attr_reader :name, :x, :y
+  atrr_accessor :name, :x, :y
 
   def initialize(name, x, y)
     @name = name
