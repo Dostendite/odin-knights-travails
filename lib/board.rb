@@ -2,18 +2,17 @@ require_relative "square"
 require_relative "knight"
 
 class Board
-  attr_reader :knight, :squares, :moves, :adjacency_list
+  attr_reader :knight, :squares, :moves, :adjacency_hash
 
   def initialize(knight_x = 3, knight_y = 3)
     @knight = Knight.new("Sleipnir", knight_x, knight_y)
     @squares = generate_board
     @moves = generate_moves
-    @adjacency_list = generate_adjacency_list
+    @adjacency_hash = generate_adjacency_hash
   end
 
   def generate_board
     board_squares = []
-
     last_color = "white"
     (0..7).each do |x|
       (0..7).each do |y|
@@ -79,15 +78,22 @@ class Board
     possible_moves
   end
 
-  def generate_adjacency_list
-    adjacency_list = []
+  def generate_adjacency_hash
+    adjacency_hash = Hash.new
 
     @squares.each do |square|
       possible_moves = generate_possible_moves(square)
-      adjacency_list << possible_moves
+      adjacency_hash[[square.x, square.y]] = possible_moves
     end
-    adjacency_list
+    adjacency_hash
   end
 
-  def calculate_move; end
+  def move_knight(x, y)
+    @knight.x = x
+    @knight.y = y
+  end
+
+  def find_route(current_x, current_y, target_x, target_y)
+    possible_moves = false
+  end
 end
