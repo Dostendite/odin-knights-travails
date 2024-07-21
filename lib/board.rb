@@ -93,7 +93,32 @@ class Board
     @knight.y = y
   end
 
-  def find_route(current_x, current_y, target_x, target_y)
-    possible_moves = false
+  def find_route(start, target)
+    memory_tree = find_route_recursive(start, target)
+    best_memory = memory_tree.inject do |memory, alt|
+      memory.length > alt.length ? alt : memory
+    end
+
+    move_knight(target[0], target[1])
+
+    puts "#{@knight.name} arrived in just #{best_memory.length} moves!".yellow
+    best_memory.each do |memory|
+      p memory
+    end
+  end
+
+  private
+
+  def find_route_recursive(current, target, move_count = 0, memory = [current], tree = [])
+    return if move_count > 6
+    return tree << memory if current == target
+
+    @adjacency_hash[[current[0], current[1]]].each do |adjacency|
+      next if memory.include?(adjacency)
+
+      find_route_recursive(adjacency, target, move_count + 1, memory + [adjacency], tree)
+    end
+
+    tree
   end
 end
